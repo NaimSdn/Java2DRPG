@@ -18,5 +18,7 @@ public class Window extends JFrame {
 
         frame.setLocationRelativeTo(null); // Make the frame in the middle of the screen
         frame.setVisible(true); // Make the frame visible
+
+        gamePanel.startGameThread();
     }
 }
