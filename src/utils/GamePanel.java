@@ -7,17 +7,16 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    // SCREEN SETTINGS
-    final int originalTileSize = 16; // Original tile size = 16x16
-    final int scale = 4; // Scale for tiles
-    public final int tileSize = originalTileSize * scale; // Tile size = 64x64
-    final int maxScreenCol = 30; // 30 Col
-    final int maxScreenRow = 16; // 16 Row
+    final int originalTileSize = 16;
+    final int scale = 4;
+    public final int tileSize = originalTileSize * scale;
+    final int maxScreenCol = 25;
+    final int maxScreenRow = 15;
 
-    final int screenWidth = tileSize * maxScreenCol; // Width = 1920px
-    final int screenHeight = tileSize * maxScreenRow; // Height = 1024px
+    final int screenWidth = tileSize * maxScreenCol;
+    final int screenHeight = tileSize * maxScreenRow;
 
-    int FPS = 60; // FPS
+    int FPS = 60;
 
     KeyHandler keyHandler = new KeyHandler();
     Thread gameThread;
@@ -25,30 +24,29 @@ public class GamePanel extends JPanel implements Runnable {
 
     public GamePanel() {
 
-        this.setPreferredSize(new Dimension(screenWidth, screenHeight)); // Size of screen
-        this.setBackground(Color.LIGHT_GRAY); // Background color
-        this.setDoubleBuffered(true); // Drawing from this component will be done in an off-screen painting buffer.
-        this.addKeyListener(keyHandler); // Add key handler
-        this.setFocusable(true); // Focusable to receive key input
+        this.setPreferredSize(new Dimension(screenWidth, screenHeight));
+        this.setBackground(Color.LIGHT_GRAY);
+        this.setDoubleBuffered(true);
+        this.addKeyListener(keyHandler);
+        this.setFocusable(true);
     }
 
     public void startGameThread() {
 
         gameThread = new Thread(this);
-        gameThread.start(); // Start the Thread
+        gameThread.start();
     }
 
     @Override
     public void run() {
 
-        double drawInterval = (double) 1000000000 /FPS;
+        double drawInterval = (double) 1000000000 / FPS;
         double delta = 0;
         long lastTime = System.nanoTime();
         long currentTime;
         long timer = 0;
         int drawCount = 0;
 
-        // Delta Game loop
         while(gameThread != null) {
 
             currentTime = System.nanoTime();
@@ -63,7 +61,6 @@ public class GamePanel extends JPanel implements Runnable {
                 drawCount++;
             }
 
-            // Showing FPS
             if(timer >= 1000000000){
                 System.out.println("FPS = " + drawCount);
                 drawCount = 0;
@@ -84,6 +81,6 @@ public class GamePanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
 
         player.draw(g2);
-        g2.dispose(); // Release resource
+        g2.dispose();
     }
 }
