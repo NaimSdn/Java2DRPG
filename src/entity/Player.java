@@ -20,7 +20,7 @@ public class Player extends Entity{
         this.keyHandler = keyHandler;
 
         setDefaultValues();
-        getPlayerImage();
+        loadSpriteSheet();
     }
 
     public void setDefaultValues() {
@@ -30,21 +30,37 @@ public class Player extends Entity{
         direction = "down";
     }
 
-    public void getPlayerImage() {
+    public void loadSpriteSheet() {
 
-        try{
+        try {
 
-            up1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/up1.png")));
-            up2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/up2.png")));
+            BufferedImage idleSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/idle_atlas.png")));
+            BufferedImage walkSheet = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/walk_atlas.png")));
 
-            down1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/down1.png")));
-            down2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/down2.png")));
+            idleSprites = new BufferedImage[4][4];
+            walkSprites = new BufferedImage[4][4];
 
-            left1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/left1.png")));
-            left2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/left2.png")));
+            for (int row = 0; row < 4; row++) {
+                for (int col = 0; col < 4; col++) {
+                    walkSprites[row][col] = walkSheet.getSubimage(
+                            col * 16,
+                            row * 16,
+                            16,
+                            16
+                    );
+                }
+            }
 
-            right1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/right1.png")));
-            right2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/player/right2.png")));
+            for (int row = 0; row < 4; row++) {
+                for (int col = 0; col < 4; col++) {
+                    idleSprites[row][col] = idleSheet.getSubimage(
+                            col * 16,
+                            row * 16,
+                            16,
+                            16
+                    );
+                }
+            }
 
         }catch (IOException e) {
             e.printStackTrace();
@@ -53,8 +69,10 @@ public class Player extends Entity{
 
     public void update() {
 
-        if(keyHandler.upPressed || keyHandler.downPressed ||
-                keyHandler.leftPressed || keyHandler.rightPressed) {
+        boolean isPressed = keyHandler.upPressed || keyHandler.downPressed ||
+                keyHandler.leftPressed || keyHandler.rightPressed;
+
+        if(isPressed) {
 
             if(keyHandler.upPressed){
                 direction = "up";
@@ -69,18 +87,12 @@ public class Player extends Entity{
                 direction = "right";
                 x += speed;
             }
+        }
 
-            spriteCounter++;
-
-            if(spriteCounter > 10){
-                if(spriteNumber == 1) {
-                    spriteNumber = 2;
-                }else if(spriteNumber == 2) {
-                    spriteNumber = 1;
-                }
-
-                spriteCounter = 0;
-            }
+        spriteCounter++;
+        if(spriteCounter > 17) {
+            spriteNumber = (spriteNumber + 1) % 4;
+            spriteCounter = 0;
         }
     }
 
@@ -88,41 +100,28 @@ public class Player extends Entity{
 
         BufferedImage image = null;
 
+        BufferedImage[][] currentSprites = (keyHandler.upPressed || keyHandler.downPressed ||
+                keyHandler.leftPressed || keyHandler.rightPressed) ? walkSprites : idleSprites;
+
         switch (direction) {
             case "up":
-                if(spriteNumber == 1) {
-                    image = up1;
-                }
-                if(spriteNumber == 2) {
-                    image = up2;
-                }
+                image = currentSprites[1][spriteNumber];
                 break;
             case "down":
-                if(spriteNumber == 1) {
-                    image = down1;
-                }
-                if(spriteNumber == 2) {
-                    image = down2;
-                }
+                image = currentSprites[0][spriteNumber];
                 break;
             case "left":
-                if(spriteNumber == 1) {
-                    image = left1;
-                }
-                if(spriteNumber == 2) {
-                    image = left2;
-                }
+                image = currentSprites[3][spriteNumber];
                 break;
             case "right":
-                if(spriteNumber == 1) {
-                    image = right1;
-                }
-                if(spriteNumber == 2) {
-                    image = right2;
-                }
+                image = currentSprites[2][spriteNumber];
                 break;
         }
 
         g2.drawImage(image, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+
+        // HITBOX
+//        g2.setColor(Color.RED);
+//        g2.drawRect(x, y, gamePanel.tileSize, gamePanel.tileSize);
     }
 }
