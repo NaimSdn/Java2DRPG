@@ -14,18 +14,24 @@ public class Player extends Entity{
     GamePanel gamePanel;
     KeyHandler keyHandler;
 
+    public final int screenX;
+    public final int screenY;
+
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
+
+        screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
+        screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
 
         setDefaultValues();
         loadSpriteSheet();
     }
 
     public void setDefaultValues() {
-        x = 256;
-        y = 256;
+        worldX = gamePanel.tileSize * 5;
+        worldY = gamePanel.tileSize * 4;
         speed = 4;
         direction = "down";
     }
@@ -76,16 +82,16 @@ public class Player extends Entity{
 
             if(keyHandler.upPressed){
                 direction = "up";
-                y -= speed;
+                worldY -= speed;
             }else if(keyHandler.downPressed){
                 direction = "down";
-                y += speed;
+                worldY += speed;
             }else if(keyHandler.leftPressed){
                 direction = "left";
-                x -= speed;
+                worldX -= speed;
             }else {
                 direction = "right";
-                x += speed;
+                worldX += speed;
             }
         }
 
@@ -118,7 +124,7 @@ public class Player extends Entity{
                 break;
         }
 
-        g2.drawImage(image, x, y, gamePanel.tileSize, gamePanel.tileSize, null);
+        g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
 
         // HITBOX
 //        g2.setColor(Color.RED);
