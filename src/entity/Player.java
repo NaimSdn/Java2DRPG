@@ -25,6 +25,8 @@ public class Player extends Entity{
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
 
+        collisionArea = new Rectangle(15,25, 34, 35);
+
         setDefaultValues();
         loadSpriteSheet();
     }
@@ -82,16 +84,33 @@ public class Player extends Entity{
 
             if(keyHandler.upPressed){
                 direction = "up";
-                worldY -= speed;
             }else if(keyHandler.downPressed){
                 direction = "down";
-                worldY += speed;
             }else if(keyHandler.leftPressed){
                 direction = "left";
-                worldX -= speed;
             }else {
                 direction = "right";
-                worldX += speed;
+            }
+
+            collisionOn = false;
+            gamePanel.collisionHandler.checkTile(this);
+
+            if (!collisionOn){
+
+                switch (direction) {
+                    case "up":
+                        worldY -= speed;
+                        break;
+                    case "down" :
+                        worldY += speed;
+                        break;
+                    case "left" :
+                        worldX -= speed;
+                        break;
+                    case "right" :
+                        worldX += speed;
+                        break;
+                }
             }
         }
 
@@ -126,7 +145,11 @@ public class Player extends Entity{
 
         g2.drawImage(image, screenX, screenY, gamePanel.tileSize, gamePanel.tileSize, null);
 
-        // HITBOX
+        // SHOW COLLISION
+        g2.setColor(new Color(255, 0, 0, 128));
+        g2.fillRect(screenX + collisionArea.x, screenY + collisionArea.y, collisionArea.width, collisionArea.height);
+
+        // SHOW HITBOX
 //        g2.setColor(Color.RED);
 //        g2.drawRect(x, y, gamePanel.tileSize, gamePanel.tileSize);
     }
