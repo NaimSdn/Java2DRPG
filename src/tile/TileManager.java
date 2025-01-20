@@ -4,6 +4,7 @@ import utils.GamePanel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,31 +28,37 @@ public class TileManager {
     }
 
     public void getTileImage() {
-
         try {
+            BufferedImage tileAtlas = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/texture_atlas.png")));
 
-            tile[0] = new Tile();
-            tile[0].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/grass.png")));
+            int tileWidth = 16;
+            int tileHeight = 16;
 
-            tile[1] = new Tile();
-            tile[1].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/wall.png")));
-            tile[1].collision = true;
+            int[][] tileCoords = {
+                    {0, 0},  // Herbe
+                    {16, 0}, // Terre
+                    {32, 0}, // Sable
+                    {0, 16}, // Arbre
+                    {0, 32}, // Mur
+                    {0, 48}  // Eau
+            };
 
-            tile[2] = new Tile();
-            tile[2].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/water.png")));
-            tile[2].collision = true;
+            boolean[] collisionFlags = {
+                    false, // Herbe (0)
+                    false, // Terre (1)
+                    false, // Sable (2)
+                    true, // Arbre (3)
+                    true, // Mur (4)
+                    true // Eau (5)
+            };
 
-            tile[3] = new Tile();
-            tile[3].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/earth.png")));
+            for (int i = 0; i < tileCoords.length; i++) {
+                tile[i] = new Tile();
+                tile[i].image = tileAtlas.getSubimage(tileCoords[i][0], tileCoords[i][1], tileWidth, tileHeight);
+                tile[i].collision = collisionFlags[i];
+            }
 
-            tile[4] = new Tile();
-            tile[4].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/tree.png")));
-            tile[4].collision = true;
-
-            tile[5] = new Tile();
-            tile[5].image = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/sand.png")));
-
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
