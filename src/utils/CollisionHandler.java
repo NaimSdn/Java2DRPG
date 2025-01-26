@@ -17,11 +17,6 @@ public class CollisionHandler {
         int entityTopWorldY = entity.worldY + entity.collisionArea.y;
         int entityBottomWorldY = entity.worldY + entity.collisionArea.y + entity.collisionArea.height;
 
-//        int entityLeftCol = entityLeftWorldX / gp.tileSize;
-//        int entityRightCol = entityRightWorldX / gp.tileSize;
-//        int entityTopRow = entityTopWorldY / gp.tileSize;
-//        int entityBottomRow = entityBottomWorldY / gp.tileSize;
-
         int entityLeftCol = (int) Math.floor((double) entityLeftWorldX / gp.tileSize);
         int entityRightCol = (int) Math.floor((double) entityRightWorldX / gp.tileSize);
         int entityTopRow = (int) Math.floor((double) entityTopWorldY / gp.tileSize);
