@@ -6,10 +6,7 @@ import utils.PerlinNoise;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Objects;
 
 public class TileManager {
@@ -17,7 +14,6 @@ public class TileManager {
     GamePanel gp;
     public Tile[] tile;
     private PerlinNoise perlinNoise;
-    //public int mapTileNumber[][];
     private long seed = 12345L;
 
     public TileManager(GamePanel gp) {
@@ -26,8 +22,6 @@ public class TileManager {
         tile = new Tile[10];
         perlinNoise = new PerlinNoise(seed);
 
-        //mapTileNumber = new int[gp.maxWorldCol][gp.maxWorldRow];
-        //generateProceduralMap(seed);  // Graine définie pour obtenir toujours la même carte
         getTileImage();
     }
 
@@ -77,54 +71,31 @@ public class TileManager {
         else return 1;
     }
 
-//    public void generateProceduralMap(long seed) {
-//        PerlinNoise perlinNoise = new PerlinNoise(seed);
-//
-//        for (int row = 0; row < gp.maxWorldRow; row++) {
-//            for (int col = 0; col < gp.maxWorldCol; col++) {
-//                double value = perlinNoise.noise(col * 0.1, row * 0.1);
-//
-//                if (value < -0.2) {
-//                    mapTileNumber[col][row] = 5;
-//                } else if (value < 0.0) {
-//                    mapTileNumber[col][row] = 2;
-//                } else if (value < 0.3) {
-//                    mapTileNumber[col][row] = 0;
-//                } else {
-//                    mapTileNumber[col][row] = 1;
-//                }
-//            }
-//        }
-//    }
-
     public void draw(Graphics2D g2) {
 
-        int worldCol = 0;
-        int worldRow = 0;
+        int startCol = (gp.player.worldX - gp.player.screenX) / gp.tileSize;
+        int endCol = (gp.player.worldX + gp.player.screenX) / gp.tileSize;
 
-        while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
+        int startRow = (gp.player.worldY - gp.player.screenY) / gp.tileSize;
+        int endRow = (gp.player.worldY + gp.player.screenY) / gp.tileSize;
 
-            //int tileNum = mapTileNumber[worldCol][worldRow];
-            int tileNum = getTileNumber(worldCol, worldRow);
+        for (int worldCol = startCol; worldCol <= endCol; worldCol++) {
+            for (int worldRow = startRow; worldRow <= endRow; worldRow++) {
 
-            int worldX = worldCol * gp.tileSize;
-            int worldY = worldRow * gp.tileSize;
-            int screenX = worldX - gp.player.worldX + gp.player.screenX;
-            int screenY = worldY - gp.player.worldY + gp.player.screenY;
+                int tileNum = getTileNumber(worldCol, worldRow);
 
-            if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
-                    worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
-                    worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
-                    worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
+                int worldX = worldCol * gp.tileSize;
+                int worldY = worldRow * gp.tileSize;
+                int screenX = worldX - gp.player.worldX + gp.player.screenX;
+                int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
-                g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
-            }
+                if (worldX + gp.tileSize > gp.player.worldX - gp.player.screenX &&
+                        worldX - gp.tileSize < gp.player.worldX + gp.player.screenX &&
+                        worldY + gp.tileSize > gp.player.worldY - gp.player.screenY &&
+                        worldY - gp.tileSize < gp.player.worldY + gp.player.screenY) {
 
-            worldCol++;
-
-            if (worldCol == gp.maxWorldCol) {
-                worldCol = 0;
-                worldRow++;
+                    g2.drawImage(tile[tileNum].image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+                }
             }
         }
     }
