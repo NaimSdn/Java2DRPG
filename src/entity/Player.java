@@ -9,13 +9,14 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class Player extends Entity{
+public class Player extends Entity {
 
     GamePanel gamePanel;
     KeyHandler keyHandler;
 
     public final int screenX;
     public final int screenY;
+    int hasKey = 0;
 
     public Player(GamePanel gamePanel, KeyHandler keyHandler) {
 
@@ -24,8 +25,10 @@ public class Player extends Entity{
 
         screenX = gamePanel.screenWidth / 2 - (gamePanel.tileSize / 2);
         screenY = gamePanel.screenHeight / 2 - (gamePanel.tileSize / 2);
+        collisionArea = new Rectangle(15, 25, 34, 35);
 
-        collisionArea = new Rectangle(15,25, 34, 35);
+        collisionAreaDefaultX = collisionArea.x;
+        collisionAreaDefaultY = collisionArea.y;
 
         setDefaultValues();
         loadSpriteSheet();
@@ -70,7 +73,7 @@ public class Player extends Entity{
                 }
             }
 
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -80,34 +83,37 @@ public class Player extends Entity{
         boolean isPressed = keyHandler.upPressed || keyHandler.downPressed ||
                 keyHandler.leftPressed || keyHandler.rightPressed;
 
-        if(isPressed) {
+        if (isPressed) {
 
-            if(keyHandler.upPressed){
+            if (keyHandler.upPressed) {
                 direction = "up";
-            }else if(keyHandler.downPressed){
+            } else if (keyHandler.downPressed) {
                 direction = "down";
-            }else if(keyHandler.leftPressed){
+            } else if (keyHandler.leftPressed) {
                 direction = "left";
-            }else {
+            } else {
                 direction = "right";
             }
 
             collisionOn = false;
             gamePanel.collisionHandler.checkTile(this);
 
-            if (!collisionOn){
+            int objectIndex = gamePanel.collisionHandler.checkObject(this, true);
+            pickUpObject(objectIndex);
+
+            if (!collisionOn) {
 
                 switch (direction) {
                     case "up":
                         worldY -= speed;
                         break;
-                    case "down" :
+                    case "down":
                         worldY += speed;
                         break;
-                    case "left" :
+                    case "left":
                         worldX -= speed;
                         break;
-                    case "right" :
+                    case "right":
                         worldX += speed;
                         break;
                 }
@@ -115,9 +121,31 @@ public class Player extends Entity{
         }
 
         spriteCounter++;
-        if(spriteCounter > 17) {
+        if (spriteCounter > 17) {
             spriteNumber = (spriteNumber + 1) % 4;
             spriteCounter = 0;
+        }
+    }
+
+    public void pickUpObject(int index) {
+
+        if(index != 999){
+
+            String objectName = gamePanel.object[index].name;
+
+            switch (objectName){
+                case "Key":
+                    hasKey++;
+
+                    gamePanel.object[index] = null;
+                    break;
+                case "Door":
+                    if(hasKey > 0){
+                        gamePanel.object[index] = null;
+                        hasKey--;
+                    }
+                    break;
+            }
         }
     }
 

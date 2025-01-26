@@ -16,5 +16,7 @@ public class Entity {
     public BufferedImage[][] walkSprites;
 
     public Rectangle collisionArea;
+    public int collisionAreaDefaultX;
+    public int collisionAreaDefaultY;
     public boolean collisionOn = false;
 }

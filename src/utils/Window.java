@@ -19,6 +19,7 @@ public class Window extends JFrame {
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
 
+        gamePanel.setupGame();
         gamePanel.startGameThread();
     }
 }

@@ -29,7 +29,7 @@ public class TileManager {
 
     public void getTileImage() {
         try {
-            BufferedImage tileAtlas = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/texture_atlas.png")));
+            BufferedImage tileAtlas = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("/tiles/tiles_texture_atlas.png")));
 
             int tileWidth = 16;
             int tileHeight = 16;
