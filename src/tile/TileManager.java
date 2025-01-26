@@ -1,6 +1,7 @@
 package tile;
 
 import utils.GamePanel;
+import utils.PerlinNoise;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -15,16 +16,19 @@ public class TileManager {
 
     GamePanel gp;
     public Tile[] tile;
-    public int mapTileNumber[][];
+    private PerlinNoise perlinNoise;
+    //public int mapTileNumber[][];
+    private long seed = 12345L;
 
     public TileManager(GamePanel gp) {
         this.gp = gp;
 
         tile = new Tile[10];
-        mapTileNumber = new int[gp.maxWorldCol][gp.maxWorldRow];
+        perlinNoise = new PerlinNoise(seed);
 
+        //mapTileNumber = new int[gp.maxWorldCol][gp.maxWorldRow];
+        //generateProceduralMap(seed);  // Graine définie pour obtenir toujours la même carte
         getTileImage();
-        loadMap("/maps/map02.txt");
     }
 
     public void getTileImage() {
@@ -63,39 +67,35 @@ public class TileManager {
         }
     }
 
-    public void loadMap(String filePath) {
-        try {
+    public int getTileNumber(int col, int row) {
 
-            InputStream is = getClass().getResourceAsStream(filePath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        double noiseValue = perlinNoise.noise(col * 0.1, row * 0.1);
 
-            int col = 0;
-            int row = 0;
-
-            while(col < gp.maxWorldCol && row < gp.maxWorldRow) {
-
-                String line = br.readLine();
-
-                while(col < gp.maxWorldCol) {
-                    String numbers[] = line.split(" ");
-
-                    int num = Integer.parseInt(numbers[col]);
-
-                    mapTileNumber[col][row] = num;
-                    col++;
-                }
-
-                if(col == gp.maxWorldCol) {
-                    col = 0;
-                    row++;
-                }
-            }
-            br.close();
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        if (noiseValue < -0.2) return 5;
+        else if (noiseValue < 0.0) return 2;
+        else if (noiseValue < 0.3) return 0;
+        else return 1;
     }
+
+//    public void generateProceduralMap(long seed) {
+//        PerlinNoise perlinNoise = new PerlinNoise(seed);
+//
+//        for (int row = 0; row < gp.maxWorldRow; row++) {
+//            for (int col = 0; col < gp.maxWorldCol; col++) {
+//                double value = perlinNoise.noise(col * 0.1, row * 0.1);
+//
+//                if (value < -0.2) {
+//                    mapTileNumber[col][row] = 5;
+//                } else if (value < 0.0) {
+//                    mapTileNumber[col][row] = 2;
+//                } else if (value < 0.3) {
+//                    mapTileNumber[col][row] = 0;
+//                } else {
+//                    mapTileNumber[col][row] = 1;
+//                }
+//            }
+//        }
+//    }
 
     public void draw(Graphics2D g2) {
 
@@ -104,7 +104,8 @@ public class TileManager {
 
         while (worldCol < gp.maxWorldCol && worldRow < gp.maxWorldRow) {
 
-            int tileNum = mapTileNumber[worldCol][worldRow];
+            //int tileNum = mapTileNumber[worldCol][worldRow];
+            int tileNum = getTileNumber(worldCol, worldRow);
 
             int worldX = worldCol * gp.tileSize;
             int worldY = worldRow * gp.tileSize;

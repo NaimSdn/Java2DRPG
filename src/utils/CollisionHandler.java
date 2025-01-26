@@ -27,8 +27,8 @@ public class CollisionHandler {
         switch (entity.direction) {
             case "up":
                 entityTopRow = (entityTopWorldY - entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNumber[entityLeftCol][entityTopRow];
-                tileNum2 = gp.tileManager.mapTileNumber[entityRightCol][entityTopRow];
+                tileNum1 = gp.tileManager.getTileNumber(entityLeftCol, entityTopRow);
+                tileNum2 = gp.tileManager.getTileNumber(entityRightCol, entityTopRow);
 
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
@@ -36,8 +36,8 @@ public class CollisionHandler {
                 break;
             case "down":
                 entityBottomRow = (entityBottomWorldY + entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNumber[entityLeftCol][entityBottomRow];
-                tileNum2 = gp.tileManager.mapTileNumber[entityRightCol][entityBottomRow];
+                tileNum1 = gp.tileManager.getTileNumber(entityLeftCol, entityBottomRow);
+                tileNum2 = gp.tileManager.getTileNumber(entityRightCol, entityBottomRow);
 
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
@@ -45,8 +45,8 @@ public class CollisionHandler {
                 break;
             case "left":
                 entityLeftCol = (entityLeftWorldX - entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNumber[entityLeftCol][entityTopRow];
-                tileNum2 = gp.tileManager.mapTileNumber[entityLeftCol][entityBottomRow];
+                tileNum1 = gp.tileManager.getTileNumber(entityLeftCol, entityTopRow);
+                tileNum2 = gp.tileManager.getTileNumber(entityLeftCol, entityBottomRow);
 
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
@@ -54,8 +54,8 @@ public class CollisionHandler {
                 break;
             case "right":
                 entityRightCol = (entityRightWorldX + entity.speed) / gp.tileSize;
-                tileNum1 = gp.tileManager.mapTileNumber[entityRightCol][entityTopRow];
-                tileNum2 = gp.tileManager.mapTileNumber[entityRightCol][entityBottomRow];
+                tileNum1 = gp.tileManager.getTileNumber(entityRightCol, entityTopRow);
+                tileNum2 = gp.tileManager.getTileNumber(entityRightCol, entityBottomRow);
 
                 if (gp.tileManager.tile[tileNum1].collision || gp.tileManager.tile[tileNum2].collision) {
                     entity.collisionOn = true;
