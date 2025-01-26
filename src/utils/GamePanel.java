@@ -30,6 +30,7 @@ public class GamePanel extends JPanel implements Runnable {
     Thread gameThread;
     public AssetSetter aSetter = new AssetSetter(this);
     public CollisionHandler collisionHandler = new CollisionHandler(this);
+    public UI ui = new UI(this);
 
     public Player player = new Player(this, keyHandler);
 
@@ -105,6 +106,7 @@ public class GamePanel extends JPanel implements Runnable {
         }
 
         player.draw(g2);
+        ui.draw(g2);
         g2.dispose();
     }
 }
